@@ -9,11 +9,15 @@ import {
   Platform,
   StyleSheet,
   Text,
-  View
+  View,
+  Alert
 } from 'react-native';
 import Camera from 'react-native-camera';
 import { error } from 'util';
 import axios from 'axios';
+import openMap from 'react-native-open-maps';
+import { Button } from 'react-native';
+
 
 
 export default class App extends Component<{}> {
@@ -21,7 +25,9 @@ export default class App extends Component<{}> {
   constructor(){
     super();
     this.state = {
-      sampleText : 'Test'
+      sampleText : 'Test',
+      latitude: '',
+      longitude: ''
     };
   }
   render() {
@@ -44,7 +50,12 @@ export default class App extends Component<{}> {
           >
           [CAPTURE_IMAGE]
           </Text>
+          <Button
+          color={'#bdc3c7'}
+          onPress={this.goToLoc.bind(this)}
+          title="Click To Open Maps" />
         </Camera>
+        
       </View>
     );
   }
@@ -68,10 +79,16 @@ export default class App extends Component<{}> {
             image: {
               content:data.data,
             },
-            features: [{
-              type: 'LOGO_DETECTION',
-              maxResults: 1,
-            }],
+            features: [
+              {
+                type: 'LOGO_DETECTION',
+                maxResults: 1,
+              },
+              {
+                type: 'LANDMARK_DETECTION',
+                maxResults: 2
+              }
+            ],
           },
         ],
       }).then(function(response){
@@ -83,8 +100,21 @@ export default class App extends Component<{}> {
             sampleText: response.data.responses[0].logoAnnotations[0].description
           });
         }
+        else{
+          this.setState({
+            sampleText: 'Object not found'
+          });
+        }
+
+        if(response.data.responses[0].landmarkAnnotations[0].locations[0].latLng){
+          this.setState({
+            latitude: response.data.responses[0].landmarkAnnotations[0].locations[0].latLng.latitude,
+            longitude: response.data.responses[0].landmarkAnnotations[0].locations[0].latLng.longitude
+          })
+        }
       
         //console.log(response.data.responses[0].textAnnotations[0].description);
+        console.log(response.data.responses[0].landmarkAnnotations[0].locations[0].latLng);
         console.log(response.data.responses[0].logoAnnotations[0].description);
       }.bind(this)).catch(function(error){
         console.log(error);
@@ -92,6 +122,30 @@ export default class App extends Component<{}> {
     }).catch(function(error){
       console.log(error);
     });
+
+  }
+
+  goToLoc(){
+    console.log(this.state.latitude);
+    console.log(this.state.longitude);
+    if(this.state.latitude && this.state.longitude){
+      openMap(
+        { 
+          latitude:this.state.latitude, 
+          longitude:this.state.longitude
+        }
+      );
+    }else{
+      Alert.alert(
+        'Error',
+        'Location not found',
+        [
+          {text: 'OK', onPress:() =>console.log('Ok Pressed')}
+        ],
+        {cancelable: false}
+      )
+    }
+    
   }
   // async takePicture(){
 
