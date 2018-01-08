@@ -147,36 +147,6 @@ export default class App extends Component<{}> {
     }
     
   }
-  // async takePicture(){
-
-  //   const cloudVision = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyA_gtgnukVcMq7YxkpYtbPBu97fldIACjY";
-  //   const options = {};
-
-  //   try{
-  //     const image64 = await this.camera.capture();
-
-  //     const response = await axios.post(cloudVision, {
-  //       requests: [
-  //         {
-  //           image: {
-  //             content: image64.data,
-  //           },
-  //           features: [{
-  //             type: 'TEXT_DETECTION',
-  //             maxResults: 1,
-  //           }],
-  //         },
-  //       ],
-  //     });
-
-  //     console.log(response.data.responses[0].textAnnotations);
-  //   }catch(ex){
-
-  //   }
-  
-
-   
-  // }
 }
 
 const styles = StyleSheet.create({
