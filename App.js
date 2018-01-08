@@ -64,7 +64,7 @@ export default class App extends Component<{}> {
 
     const options = {};
 
-    const cloudVision = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyA_gtgnukVcMq7YxkpYtbPBu97fldIACjY";
+    const cloudVision = "";
 
     this.camera.capture({metadata:options}).then((data)=>{
       //console.log(data);
